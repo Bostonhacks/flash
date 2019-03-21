@@ -1,1 +1,1 @@
-print("Getting started")
+print("Getting started with Flash")
