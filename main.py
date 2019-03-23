@@ -1,1 +1,4 @@
-print("Getting started with Flash")
+import flag_parser
+
+flag_parser.parse_input()
+
