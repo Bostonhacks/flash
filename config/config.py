@@ -1,3 +1,5 @@
+import config
+
 def read_config(project_dir):
     """Reads configuration file a given project
     Args:
@@ -5,6 +7,6 @@ def read_config(project_dir):
     Returns:
         config: returns a configuration class 
     """
-    config = Configuration()
+    config = None
 
 

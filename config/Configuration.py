@@ -1,9 +1,9 @@
 class Configuration:
-     """Stores the data from the .flash file genereted by the user
-    
+    """Stores the data from the .flash file genereted by the user
+
     Attributes:
-        project_dir (str): Description of `attr1`.
-        aws_secret (str): Description of `attr2`.
+        project_dir (str): project name or directory.
+        aws_secret (str): key to use aws cli.
 
     """
     project_dir = ''
