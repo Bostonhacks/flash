@@ -15,4 +15,8 @@ def read_config(project_dir):
 
     config.set_project_dir(input_config['flash']['project'])
     config.set_aws_secret(input_config['flash']['secret'])
-    
+    config.set_project_type(input_config['flash']['type']) 
+    config.set_remote_location(input_config['remote']['location'])
+
+
+    return config

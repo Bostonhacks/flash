@@ -5,7 +5,8 @@ flash:
     type: dynamic
     secret: shhhhh
     db: write-math
-other:
+remote:
+    location: www.bostonhacks.io
     prod: true/false
     circle: yes
 """
