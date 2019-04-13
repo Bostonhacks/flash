@@ -1,4 +1,4 @@
-class Configuration:
+class Configuration():
     """Stores the data from the .flash file genereted by the user
 
     Attributes:
@@ -17,3 +17,9 @@ class Configuration:
 
     def get_project_dir(self):
         return self.project_dir
+
+    def set_aws_secret(self, secret):
+        pass
+
+    def get_aws_secret(self):
+        return self.aws_secret

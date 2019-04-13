@@ -1,4 +1,5 @@
-import config
+import Configuration
+import yaml
 
 def read_config(project_dir):
     """Reads configuration file a given project
@@ -7,6 +8,11 @@ def read_config(project_dir):
     Returns:
         config: returns a configuration class 
     """
-    config = None
+    config = Configuration.Configuration()
 
+    with open("config.flash", 'r') as ymlfile:
+        input_config = yaml.load(ymlfile)
 
+    config.set_project_dir(input_config['flash']['project'])
+    config.set_aws_secret(input_config['flash']['secret'])
+    
