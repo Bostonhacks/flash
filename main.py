@@ -1,4 +1,3 @@
-import flag_parser
+import config
 
-flag_parser.parse_input()
-
+print('flashing running')
