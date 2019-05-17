@@ -1,3 +1,6 @@
-import config
+from config import config
+from config import generate
 
-print('flashing running')
+
+generate.generate_config()
+config.read_config("flash")
