@@ -6,19 +6,23 @@ class Configuration():
         aws_secret (str): key to use aws cli.
 
     """
-    project_name = ''
-    aws_secret = ''
-    project_type = ''
-    remote_location = ''
-
     def __init__(self):
-        pass
+        self.project_name = ''
+        self.aws_access_key = ''
+        self.aws_secret = ''
+        self.project_type = ''
 
     def set_project_name(self, project_name):
         self.project_name = project_name
 
     def get_project_dir(self):
         return self.project_name
+
+    def set_aws_access_key(self, key):
+        self.aws_access_key = key
+
+    def get_aws_access_key(self):
+        return self.aws_access_key
 
     def set_aws_secret(self, secret):
         self.aws_secret = secret
@@ -31,9 +35,3 @@ class Configuration():
 
     def get_project_type(self):
         return self.project_type
-
-    def set_remote_location(self, location):
-        self.remote_location = location
-
-    def get_remote_location(self):
-        return self.remote_location
