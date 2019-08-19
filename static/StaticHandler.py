@@ -1,6 +1,6 @@
 import boto3
 import json
-import helpers
+# from helpers.helpers import * #seems to be a bug
 import os
 
 # Bug with routing helpers so moved it inside here for now
