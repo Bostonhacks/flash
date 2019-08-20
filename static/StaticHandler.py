@@ -33,7 +33,7 @@ class StaticHandler:
     # Applies Bucket Policy
     # default public policy 
     # Reference link: https://docs.aws.amazon.com/AmazonS3/latest/dev/WebsiteAccessPermissionsReqd.html
-    def generate_policy(self):
+    def set_public_policy(self):
         # Default public policy
         policy = {
             "Version":"2012-10-17",
