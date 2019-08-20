@@ -1,7 +1,13 @@
 import boto3
 import json
-from helpers.helpers import *
+# from helpers.helpers import * #seems to be a bug
 import os
+
+# Bug with routing helpers so moved it inside here for now
+def remove_prefix(text, prefix):
+    if text.startswith(prefix):
+        return text[len(prefix):]
+    return text
 
 class StaticHandler:
     def __init__(self, config):
@@ -19,10 +25,40 @@ class StaticHandler:
             bucket_response = self.boto_client.create_bucket(Bucket=self.bucket_name)
             print(self.bucket_name)
             print(bucket_response)
-        except ClientError as e:
+        except Exception as e:
             print(e)
             return False
         return True
+
+    # Applies Bucket Policy
+    # default public policy 
+    # Reference link: https://docs.aws.amazon.com/AmazonS3/latest/dev/WebsiteAccessPermissionsReqd.html
+    def set_public_policy(self):
+        # Default public policy
+        policy = {
+            "Version":"2012-10-17",
+            "Statement":[
+                {
+                "Sid":"AddPerm",
+                "Effect":"Allow",
+                "Principal": "*",
+                "Action":["s3:GetObject"],
+                "Resource":["arn:aws:s3:::" + self.bucket_name + "/*"]
+                }
+            ]
+        }
+        # Converts policy into a json and puts into the S3 bucket
+        try:
+            policy = json.dumps(policy)
+            self.boto_client.put_bucket_policy(
+                Bucket=self.bucket_name,
+                Policy=policy
+            )
+        except Exception as e:
+            print(e)
+            return False
+        return True
+
 
     def upload_files(self, path):
         """ Upload all files in directory to s3 bucket """
@@ -38,7 +74,7 @@ class StaticHandler:
                     s3_file_path = remove_prefix(file_path, "../test-structure/")
                     print("Uploading: ", s3_file_path)
                     self.boto_client.upload_file(file_path, self.bucket_name, s3_file_path)
-        except ClientError as e:
+        except Exception as e:
             print(e)
             return False
         return True
