@@ -83,3 +83,19 @@ class StaticHandler:
         """ generate a unique name for s3 bucket from project name """
         # id = sum of ascii values of characters in project_name
         return ''.join([self.project_name, '-', str(sum([ord(c) for c in self.project_name]))])
+
+    def configure_website_hosting(self):
+        """ Configuring the bucket for Static Website Usage """
+        try:
+            self.boto_client.put_bucket_website(
+                Bucket=self.bucket_name, 
+                WebsiteConfiguration = {
+                    # default index and error used for now
+                    'ErrorDocument': {'Key': "error.html"},
+                    'IndexDocument': {'Suffix': "index.html"},
+                }
+            )
+        except Exception as e:
+            print(e)
+            return False
+        return True
