@@ -1,13 +1,7 @@
 import boto3
 import json
-# from helpers.helpers import * #seems to be a bug
+from helpers.helpers import *
 import os
-
-# Bug with routing helpers so moved it inside here for now
-def remove_prefix(text, prefix):
-    if text.startswith(prefix):
-        return text[len(prefix):]
-    return text
 
 class StaticHandler:
     def __init__(self, config):
@@ -62,7 +56,7 @@ class StaticHandler:
 
     def upload_files(self, path):
         """ Upload all files in directory to s3 bucket """
-        # preprocess path to make sure there is a / at the end
+        # preprocess path to make sure there is a '/' at the end
         if path[-1] != "/":
             path += "/"
 
@@ -71,18 +65,23 @@ class StaticHandler:
             for root, dirs, files in os.walk(path):
                 for name in files:
                     file_path = os.path.join(root, name)
-                    s3_file_path = remove_prefix(file_path, "../test-structure/")
-                    print("Uploading: ", s3_file_path)
-                    self.boto_client.upload_file(file_path, self.bucket_name, s3_file_path)
-        except Exception as e:
+                    s3_file_path = remove_prefix(file_path, path)
+                    print(s3_file_path)
+                    # manually set content_type for s3 objects, otherwise it's default to binary/octet-stream
+                    content_type = get_content_type(s3_file_path)
+
+                    print("Uploading: ", s3_file_path, "with content_type", content_type)                    
+                    self.boto_client.upload_file(file_path, self.bucket_name, s3_file_path, ExtraArgs={'ContentType': content_type})
+        except ClientError as e:
             print(e)
             return False
         return True
 
     def generate_bucket_name(self):
-        """ generate a unique name for s3 bucket from project name """
+        """ generate a (hopefully) unique name for s3 bucket from project name """
         # id = sum of ascii values of characters in project_name
         return ''.join([self.project_name, '-', str(sum([ord(c) for c in self.project_name]))])
+
 
     def configure_website_hosting(self):
         """ Configuring the bucket for Static Website Usage """
