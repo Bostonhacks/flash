@@ -11,4 +11,4 @@ if config.project_type == "static":
     bucket.create_bucket() 
     bucket.set_public_policy()
     bucket.configure_website_hosting()
-    # bucket.upload_files("./upload")
+    bucket.upload_files("./upload")
