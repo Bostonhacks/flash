@@ -19,12 +19,42 @@ class StaticHandler:
             bucket_response = self.boto_client.create_bucket(Bucket=self.bucket_name)
             print(self.bucket_name)
             print(bucket_response)
-        except ClientError as e:
+        except Exception as e:
             print(e)
             return False
         return True
 
-    def upload_files_to_bucket(self, path):
+    # Applies Bucket Policy
+    # default public policy 
+    # Reference link: https://docs.aws.amazon.com/AmazonS3/latest/dev/WebsiteAccessPermissionsReqd.html
+    def set_public_policy(self):
+        # Default public policy
+        policy = {
+            "Version":"2012-10-17",
+            "Statement":[
+                {
+                "Sid":"AddPerm",
+                "Effect":"Allow",
+                "Principal": "*",
+                "Action":["s3:GetObject"],
+                "Resource":["arn:aws:s3:::" + self.bucket_name + "/*"]
+                }
+            ]
+        }
+        # Converts policy into a json and puts into the S3 bucket
+        try:
+            policy = json.dumps(policy)
+            self.boto_client.put_bucket_policy(
+                Bucket=self.bucket_name,
+                Policy=policy
+            )
+        except Exception as e:
+            print(e)
+            return False
+        return True
+
+
+    def upload_files(self, path):
         """ Upload all files in directory to s3 bucket """
         # preprocess path to make sure there is a '/' at the end
         if path[-1] != "/":
@@ -52,28 +82,19 @@ class StaticHandler:
         # id = sum of ascii values of characters in project_name
         return ''.join([self.project_name, '-', str(sum([ord(c) for c in self.project_name]))])
 
-    def set_public_bucket_policy(self):    
-        """ Set bucket policy to allow read access to the website """    
-        bucket_policy = {
-            "Version": "2012-10-17",
-            "Statement": [
-                {
-                    "Sid": "PublicReadForGetBucketObjects",
-                    "Effect": "Allow",
-                    "Principal": "*",
-                    "Action": "s3:GetObject",
-                    "Resource": f"arn:aws:s3:::{self.bucket_name}/*"
-                }
-            ]
-        }
 
-        # Convert the policy from JSON dict to string
-        bucket_policy = json.dumps(bucket_policy)
-
+    def configure_website_hosting(self):
+        """ Configuring the bucket for Static Website Usage """
         try:
-            self.boto_client.put_bucket_policy(Bucket=self.bucket_name, Policy=bucket_policy)
-        except ClientError as e:
+            self.boto_client.put_bucket_website(
+                Bucket=self.bucket_name, 
+                WebsiteConfiguration = {
+                    # default index and error used for now
+                    'ErrorDocument': {'Key': "error.html"},
+                    'IndexDocument': {'Suffix': "index.html"},
+                }
+            )
+        except Exception as e:
             print(e)
             return False
-
         return True
